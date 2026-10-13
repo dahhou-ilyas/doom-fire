@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-var COLOR_PALET = []rl.Color{rl.Black,rl.Red,rl.Orange,rl.Yellow,rl.White}
+var COLORS = []rl.Color{rl.Black,rl.Red,rl.Orange,rl.Yellow,rl.White}
 
-var PARTITIO_PALET = 4
+var PARTITIO_BETWAN_COLORS = 5
 
 
 func ColorLerp(start rl.Color, end rl.Color , amount float32) rl.Color{
@@ -23,9 +24,21 @@ func ColorLerp(start rl.Color, end rl.Color , amount float32) rl.Color{
 	}
 }
 
-func drawingPalet() {
+func drawingPalet() []rl.Color {
+	var partitionColor []rl.Color
 
+	for i := 0; i < len(COLORS)-1; i++ {
+		c0 := COLORS[i]
+		c1 := COLORS[i+1]
 
+		for step := 0; step < PARTITIO_BETWAN_COLORS; step++ {
+			currentColor := ColorLerp(c0,c1,(float32(step)+0.5)/float32(PARTITIO_BETWAN_COLORS))
+
+			partitionColor = append(partitionColor, currentColor)
+		}
+	}
+
+	return partitionColor
 }
 
 func main() {
