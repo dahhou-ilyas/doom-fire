@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -10,6 +9,9 @@ var COLORS = []rl.Color{rl.Black,rl.Red,rl.Orange,rl.Yellow,rl.White}
 
 var PARTITIO_BETWAN_COLORS = 5
 
+var posX,posY = 10 , 200
+
+var width , hight = 20,20
 
 func ColorLerp(start rl.Color, end rl.Color , amount float32) rl.Color{
 	if amount > 1 { amount = 1}
@@ -23,7 +25,7 @@ func ColorLerp(start rl.Color, end rl.Color , amount float32) rl.Color{
 	}
 }
 
-func drawingPalet() []rl.Color {
+func PaletPartion() []rl.Color {
 	var partitionColor []rl.Color
 
 	for i := 0; i < len(COLORS)-1; i++ {
@@ -40,17 +42,29 @@ func drawingPalet() []rl.Color {
 	return partitionColor
 }
 
+func drawRectanglesPaletPartinio(){
+	colors := PaletPartion()
+
+
+	Shift := 0
+
+	for i := 0; i < len(colors); i++ {
+		rl.DrawRectangle(int32(posX+Shift),int32(posY),int32(width),int32(hight),colors[i])
+		Shift = Shift + width
+	}
+}
+
 func main() {
   rl.InitWindow(800, 450, "raylib [core] example - basic window")
   defer rl.CloseWindow()
 
   rl.SetTargetFPS(60)
 
+
   for !rl.WindowShouldClose() {
     rl.BeginDrawing()
-	fmt.Println("rendring")
-    rl.ClearBackground(rl.RayWhite)
-    rl.DrawText("Congrats! You created your first window!", 190, 200, 20, rl.LightGray)
+    rl.ClearBackground(rl.Black)
+    drawRectanglesPaletPartinio()
 
     rl.EndDrawing()
   }
