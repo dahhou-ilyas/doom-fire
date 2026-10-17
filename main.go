@@ -6,20 +6,26 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+// COLORS are the key colors of the fire, from coldest to hottest.
 var COLORS = []rl.Color{rl.Black, rl.Red, rl.Orange, rl.Yellow, rl.White}
+
+// FiRE_PALLET is the full gradient built from COLORS: index 0 = off, last index = hottest.
 var FiRE_PALLET = PaletPartion()
 
 const SCREEN_WIDTH , SCREEN_HIEGHT = 1000,600
 const PARTITIO_BETWAN_COLORS =15
 const PIXEL_SIZE = 5
 
+// Size of the fire grid: one cell per PIXEL_SIZE square on screen.
 const FIRE_WIDTH , FIRE_HIEGHT = SCREEN_WIDTH / PIXEL_SIZE , SCREEN_HIEGHT / PIXEL_SIZE
 
+// FIRE_ARRAY holds a palette index for every cell of the grid.
 var FIRE_ARRAY [FIRE_HIEGHT][FIRE_WIDTH]int = getFireArray();
 
 
 
 
+// getFireArray creates the grid and fills the bottom row with the hottest color (the fire source).
 func getFireArray() [FIRE_HIEGHT][FIRE_WIDTH]int {
 	fire_array := [FIRE_HIEGHT][FIRE_WIDTH]int{};
 	for i := 0; i < FIRE_WIDTH; i++ {
@@ -30,6 +36,7 @@ func getFireArray() [FIRE_HIEGHT][FIRE_WIDTH]int {
 
 
 
+// ColorLerp mixes two colors, amount goes from 0 (start) to 1 (end).
 func ColorLerp(start rl.Color, end rl.Color , amount float32) rl.Color{
 	if amount > 1 { amount = 1}
 	if amount < 0 { amount = 0 }
@@ -42,6 +49,7 @@ func ColorLerp(start rl.Color, end rl.Color , amount float32) rl.Color{
 	}
 }
 
+// PaletPartion builds the gradient by inserting PARTITIO_BETWAN_COLORS steps between each key color.
 func PaletPartion() []rl.Color {
 	var partitionColor []rl.Color
 	for i := 0; i < len(COLORS)-1; i++ {
@@ -57,11 +65,13 @@ func PaletPartion() []rl.Color {
 	return partitionColor
 }
 
+// doFire moves every cell one row up, cooling it and shifting it sideways at random.
 func doFire(){
 	for x := 0; x < FIRE_WIDTH; x++ {
 		for y := 1; y < FIRE_HIEGHT; y++ {
 			color_index := FIRE_ARRAY[y][x];
 			if color_index != 0 {
+				// random is 0 or 1: it decides both the cooling and the sideways drift
 				random := rand.Intn(2)
 				FIRE_ARRAY[y-1][((x+random)%FIRE_WIDTH+FIRE_WIDTH)%FIRE_WIDTH]=color_index-random
 			}
@@ -71,6 +81,7 @@ func doFire(){
 
 
 
+// drawFire draws each non-black cell as a small square.
 func drawFire(){
 	for y, row := range FIRE_ARRAY {
 		for x, color_index := range row  {
@@ -90,6 +101,7 @@ func main() {
   rl.SetTargetFPS(60)
 
 
+  // main loop: draw the current frame, then compute the next one
   for !rl.WindowShouldClose() {	
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
