@@ -1,47 +1,31 @@
 package main
 
 import (
-	"fmt"
-	"math/rand"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-var COLORS = []rl.Color{rl.White, rl.Yellow, rl.Orange, rl.Red, rl.Black}
+var COLORS = []rl.Color{rl.Black, rl.Red, rl.Orange, rl.Yellow, rl.White}
 
+const SCREEN_WIDTH , SCREEN_HIEGHT = 1000,600
+const PARTITIO_BETWAN_COLORS =8
+const PIXEL_SIZE = 5
 
-var SCREEN_WIDTH , SCREEN_HIEGHT = 1000,600
+const FIRE_WIDTH , FIRE_HIEGHT = SCREEN_WIDTH / PIXEL_SIZE , SCREEN_HIEGHT / PIXEL_SIZE
 
-var PARTITIO_BETWAN_COLORS =20
+var FIRE_ARRAY [FIRE_HIEGHT][FIRE_WIDTH]int = getFireArray();
 
-var posX , posY= 0 , 580
+var FiRE_PALLET = PaletPartion()
 
-var PIXEL_SIZE = 5
-
-
-func drawFire(palette []rl.Color , height float32){
-	colums := SCREEN_WIDTH / PIXEL_SIZE
-
-	nbRectangls := int(height) / PIXEL_SIZE
-
-	for j := 0; j < colums; j++ {
-		for i := 0; i < nbRectangls; i++ {	
-			t := float32(i) / float32(nbRectangls)
-			idx := int(t * float32(len(palette)-1))
-
-			fmt.Println(idx)
-			x := posX + j*PIXEL_SIZE
-			y := posY - (i+1)*PIXEL_SIZE
-
-			if idx>40 {
-				rl.DrawRectangle(int32(x), int32(y), int32(PIXEL_SIZE-1), int32(PIXEL_SIZE-1), palette[idx-rand.Intn(10)])
-			}else{
-				rl.DrawRectangle(int32(x), int32(y), int32(PIXEL_SIZE-1), int32(PIXEL_SIZE-1), palette[idx])
-
-			}
-		}
+func getFireArray() [FIRE_HIEGHT][FIRE_WIDTH]int {
+	fire_array := [FIRE_HIEGHT][FIRE_WIDTH]int{};
+	for i := 0; i < FIRE_WIDTH; i++ {
+		fire_array[FIRE_HIEGHT-1][i] = len(FiRE_PALLET)-1
 	}
+	return fire_array
 }
+
+
 
 func ColorLerp(start rl.Color, end rl.Color , amount float32) rl.Color{
 	if amount > 1 { amount = 1}
@@ -72,6 +56,28 @@ func PaletPartion() []rl.Color {
 	return partitionColor
 }
 
+func doFire(){
+	for x := 0; x < FIRE_WIDTH; x++ {
+		for y := 1; y < FIRE_HIEGHT; y++ {
+			color_index := FIRE_ARRAY[y][x];
+			if color_index != 0 {
+				FIRE_ARRAY[y-1][x]=color_index-1
+			}
+		}
+	}
+}
+
+func drawFire(){
+	for y, row := range FIRE_ARRAY {
+		for x, color_index := range row  {
+			if color_index != 0 {
+				rl.DrawRectangle(int32(x*PIXEL_SIZE),int32(y*PIXEL_SIZE),PIXEL_SIZE-1,PIXEL_SIZE-1,FiRE_PALLET[color_index])
+			}
+		}
+	}
+}
+
+
 
 func main() {
   rl.InitWindow(int32(SCREEN_WIDTH), int32(SCREEN_HIEGHT), "raylib [core] example - basic window")
@@ -80,28 +86,11 @@ func main() {
   rl.SetTargetFPS(60)
 
 
-  palette := PaletPartion()
-
-  height := float32(200)
-  target := height  
-
-
-  for !rl.WindowShouldClose() {
-
-	dt := rl.GetFrameTime()
-
-	diff := target - height
-
-	if diff < 2 && diff > -2 {
-		target = float32(rand.Intn(300) + 200)
-	}
-
-	height = rl.Lerp(height, target, 3*dt)
-    
+  for !rl.WindowShouldClose() {	
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
-	drawFire(palette, height)
-	PaletPartion()
+	drawFire()
+	doFire()
 	rl.EndDrawing()
   }
 }
