@@ -5,6 +5,7 @@
 *.exe
 *.out
 *.app
+/doom-fire-algorithm
 
 # Go build and test artifacts
 *.test
@@ -32,3 +33,7 @@ temp/
 
 # Manually generated CGO files
 cgo-demo/
+
+# Screen recordings (the README uses demo.gif instead)
+*.mov
+*.mp4

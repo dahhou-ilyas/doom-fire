@@ -1,4 +1,4 @@
-module raylib_training
+module doom-fire-algorithm
 
 go 1.26.4
 

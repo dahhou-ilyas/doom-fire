@@ -95,7 +95,7 @@ func drawFire(){
 
 
 func main() {
-  rl.InitWindow(int32(SCREEN_WIDTH), int32(SCREEN_HIEGHT), "raylib [core] example - basic window")
+  rl.InitWindow(int32(SCREEN_WIDTH), int32(SCREEN_HIEGHT), "Doom Fire Algorithm")
   defer rl.CloseWindow()
 
   rl.SetTargetFPS(60)
