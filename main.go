@@ -1,22 +1,57 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 var COLORS = []rl.Color{rl.Black, rl.Red, rl.Orange, rl.Yellow, rl.White}
+var FiRE_PALLET = PaletPartion()
 
 const SCREEN_WIDTH , SCREEN_HIEGHT = 1000,600
-const PARTITIO_BETWAN_COLORS =20
-const PIXEL_SIZE = 2
+const PARTITIO_BETWAN_COLORS =3
+const PIXEL_SIZE = 20
 
 const FIRE_WIDTH , FIRE_HIEGHT = SCREEN_WIDTH / PIXEL_SIZE , SCREEN_HIEGHT / PIXEL_SIZE
 
 var FIRE_ARRAY [FIRE_HIEGHT][FIRE_WIDTH]int = getFireArray();
 
-var FiRE_PALLET = PaletPartion()
+var FIRE_ARRAY2 [FIRE_HIEGHT][1]int = getFireArray2();
+
+func getFireArray2() [FIRE_HIEGHT][1]int {
+	fire_array := [FIRE_HIEGHT][1]int{};
+	for i := 0; i < 1; i++ {
+		fire_array[FIRE_HIEGHT-1][i] = len(FiRE_PALLET)-1
+	}
+	return fire_array
+}
+
+func drawFire2(){
+	for y, row := range FIRE_ARRAY2 {
+		for x, color_index := range row  {
+			if color_index != 0 {
+				rl.DrawRectangle(int32(x*PIXEL_SIZE),int32(y*PIXEL_SIZE),PIXEL_SIZE-1,PIXEL_SIZE-1,FiRE_PALLET[color_index])
+			}
+		}
+	}
+}
+
+func doFire2(){
+	for x := 0; x < 1; x++ {
+		for y := 1; y < FIRE_HIEGHT; y++ {
+			color_index := FIRE_ARRAY2[y][x];
+			if color_index != 0 {
+				random := rand.Intn(2)
+				FIRE_ARRAY2[y-1][x]=color_index-random
+				fmt.Printf("colore index: %d -- RANDOM VALUE %d -- current index: %d\n", color_index, random, y)
+			}
+		}
+	}
+	fmt.Println("FINISHHHHHH")
+}
+
 
 func getFireArray() [FIRE_HIEGHT][FIRE_WIDTH]int {
 	fire_array := [FIRE_HIEGHT][FIRE_WIDTH]int{};
@@ -42,7 +77,6 @@ func ColorLerp(start rl.Color, end rl.Color , amount float32) rl.Color{
 
 func PaletPartion() []rl.Color {
 	var partitionColor []rl.Color
-
 	for i := 0; i < len(COLORS)-1; i++ {
 		c0 := COLORS[i]
 		c1 := COLORS[i+1]
@@ -53,7 +87,6 @@ func PaletPartion() []rl.Color {
 			partitionColor = append(partitionColor, currentColor)
 		}
 	}
-
 	return partitionColor
 }
 
@@ -93,8 +126,8 @@ func main() {
   for !rl.WindowShouldClose() {	
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
-	drawFire()
-	doFire()
+	drawFire2()
+	doFire2()
 	rl.EndDrawing()
   }
 }
