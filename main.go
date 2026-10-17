@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -8,8 +9,8 @@ import (
 var COLORS = []rl.Color{rl.Black, rl.Red, rl.Orange, rl.Yellow, rl.White}
 
 const SCREEN_WIDTH , SCREEN_HIEGHT = 1000,600
-const PARTITIO_BETWAN_COLORS =8
-const PIXEL_SIZE = 5
+const PARTITIO_BETWAN_COLORS =20
+const PIXEL_SIZE = 2
 
 const FIRE_WIDTH , FIRE_HIEGHT = SCREEN_WIDTH / PIXEL_SIZE , SCREEN_HIEGHT / PIXEL_SIZE
 
@@ -61,11 +62,14 @@ func doFire(){
 		for y := 1; y < FIRE_HIEGHT; y++ {
 			color_index := FIRE_ARRAY[y][x];
 			if color_index != 0 {
-				FIRE_ARRAY[y-1][x]=color_index-1
+				random := rand.Intn(2)
+				FIRE_ARRAY[y-1][x]=color_index-random
 			}
 		}
 	}
 }
+
+
 
 func drawFire(){
 	for y, row := range FIRE_ARRAY {
